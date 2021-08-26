@@ -2,12 +2,12 @@
 
 # two dimensional tight-binding checkerboard model
 
-# Copyright under GNU General Public License 2010, 2012
+# Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as pl
+import pylab as plt
 
 # define lattice vectors
 lat=[[1.0,0.0],[0.0,1.0]]
@@ -33,17 +33,10 @@ my_model.set_hop(t, 1, 0, [1, 1])
 # print tight-binding model
 my_model.display()
 
-# generate list of k-points following some high-symmetry line in
-# the k-space. Variable kpts here is just an array of k-points
+# generate k-point path and labels
 path=[[0.0,0.0],[0.0,0.5],[0.5,0.5],[0.0,0.0]]
-kpts=k_path(path,100)
-print '---------------------------------------'
-print 'report of k-point path'
-print '---------------------------------------'
-print 'Path runs over',len(kpts),'k-points connecting:'
-for k in path:
-    print k
-print
+label=(r'$\Gamma $',r'$X$', r'$M$', r'$\Gamma $')
+(k_vec,k_dist,k_node)=my_model.k_path(path,301)
 
 print '---------------------------------------'
 print 'starting calculation'
@@ -52,22 +45,30 @@ print 'Calculating bands...'
 
 # solve for eigenenergies of hamiltonian on
 # the set of k-points from above
-evals=my_model.solve_all(kpts)
+evals=my_model.solve_all(k_vec)
 
 # plotting of band structure
 print 'Plotting bandstructure...'
 
 # First make a figure object
-fig=pl.figure()
-# plot first band
-pl.plot(evals[0])
-# plot second band
-pl.plot(evals[1])
+fig, ax = plt.subplots()
+
+# specify horizontal axis details
+ax.set_xlim([0,k_node[-1]])
+ax.set_xticks(k_node)
+ax.set_xticklabels(label)
+for n in range(len(k_node)):
+  ax.axvline(x=k_node[n], linewidth=0.5, color='k')
+
+# plot bands
+for n in range(2):
+  ax.plot(k_dist,evals[n])
 # put title
-pl.title("Checkerboard band structure")
-pl.xlabel("Path in k-space")
-pl.ylabel("Band energy")
+ax.set_title("Checkerboard band structure")
+ax.set_xlabel("Path in k-space")
+ax.set_ylabel("Band energy")
 # make an PDF figure of a plot
-pl.savefig("checkerboard_band.pdf")
+fig.tight_layout()
+fig.savefig("checkerboard_band.pdf")
 
 print 'Done.\n'

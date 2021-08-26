@@ -3,12 +3,12 @@
 # Two dimensional tight-binding 2D Kane-Mele model
 # C.L. Kane and E.J. Mele, PRL 95, 146802 (2005) Eq. (1)
 
-# Copyright under GNU General Public License 2010, 2012
+# Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pytb.txt)
 
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as pl
+import pylab as plt
 
 def get_kane_mele(topological):
   "Return a Kane-Mele model in the normal or topological phase."
@@ -72,28 +72,30 @@ for top_index in ["even","odd"]:
   # get the tight-binding model
   my_model=get_kane_mele(top_index)
 
-  # generate list of k-points following some high-symmetry line in
-  # the k-space. Variable kpts here is just an array of k-points
-  path=[[1.0,0.0],[0.0,1.0]]
-  kpts=k_path(path,100)
+  # list of nodes (high-symmetry points) that will be connected
+  path=[[0.,0.],[2./3.,1./3.],[.5,.5],[1./3.,2./3.], [0.,0.]]
+  # labels of the nodes
+  label=(r'$\Gamma $',r'$K$', r'$M$', r'$K^\prime$', r'$\Gamma $')
+  (k_vec,k_dist,k_node)=my_model.k_path(path,101,report=False)
   
   # initialize figure with subplots
-  pl.figure(figsize=(6.0,2.4))
-  pl.subplots_adjust(wspace=0.35)
+  fig, (ax1, ax2) = plt.subplots(1,2,figsize=(6.5,2.8))
   
   # solve for eigenenergies of hamiltonian on
   # the set of k-points from above
-  evals=my_model.solve_all(kpts)
-  pl.subplot(1,2,1)
+  evals=my_model.solve_all(k_vec)
   # plot bands
-  pl.plot(evals[0])
-  pl.plot(evals[1])
-  pl.plot(evals[2])
-  pl.plot(evals[3])
-  # put title
-  pl.title("Kane-Mele: "+top_index+" phase")
-  pl.xlabel("k-space")
-  pl.ylabel("Energy")
+  ax1.plot(k_dist,evals[0])
+  ax1.plot(k_dist,evals[1])
+  ax1.plot(k_dist,evals[2])
+  ax1.plot(k_dist,evals[3])
+  ax1.set_title("Kane-Mele: "+top_index+" phase")
+  ax1.set_xticks(k_node)
+  ax1.set_xticklabels(label)
+  for n in range(len(k_node)):
+    ax1.axvline(x=k_node[n],linewidth=0.5, color='k')
+  ax1.set_xlabel("k-space")
+  ax1.set_ylabel("Energy")
   
   #calculate my-array
   my_array=wf_array(my_model,[41,41])
@@ -114,18 +116,22 @@ for top_index in ["even","odd"]:
   wan_cent = my_array.berry_phase([0,1],dir=1,contin=False,berry_evals=True)
   wan_cent/=(2.0*np.pi)
   
+  nky=wan_cent.shape[0]
+  ky=np.linspace(0.,1.,nky)
   # draw shifted Wannier center positions
-  pl.subplot(1,2,2)
   for shift in range(-2,3):
-    pl.plot(wan_cent[:,0]+float(shift),"k.")
-    pl.plot(wan_cent[:,1]+float(shift),"k.")
-  pl.ylim(-1.0,1.0)
-  
-  pl.ylabel("Wannier center")
-  pl.xlabel(r'$k_y$')
-  pl.title("1D Wannier centers: "+top_index+" phase")
-  
-  pl.savefig("kane_mele_"+top_index+".pdf")
+    ax2.plot(ky,wan_cent[:,0]+float(shift),"k.")
+    ax2.plot(ky,wan_cent[:,1]+float(shift),"k.")
+  ax2.set_ylim(-1.0,1.0)
+  ax2.set_ylabel('Wannier center along x')
+  ax2.set_xlabel(r'$k_y$')
+  ax2.set_xticks([0.0,0.5,1.0])
+  ax2.set_xticklabels([r"$0$",r"$\pi$", r"$2\pi$"])
+  ax2.axvline(x=.5,linewidth=0.5, color='k')
+  ax2.set_title("1D Wannier centers: "+top_index+" phase")
+
+  fig.tight_layout()
+  fig.savefig("kane_mele_"+top_index+".pdf")
 
 print 'Done.\n'
 

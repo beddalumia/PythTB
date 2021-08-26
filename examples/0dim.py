@@ -2,12 +2,12 @@
 
 # zero dimensional tight-binding model of a NH3 molecule
 
-# Copyright under GNU General Public License 2010, 2012
+# Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as pl
+import pylab as plt
 
 # define lattice vectors
 lat=[[1.0,0.0,0.0],[0.0,1.0,0.0],[0.0,0.0,1.0]]
@@ -49,16 +49,17 @@ print
 evals=my_model.solve_all()
 
 # First make a figure object
-fig=pl.figure()
+fig, ax = plt.subplots()
 # plot all states
-pl.plot(evals,"bo")
-pl.ylim(-1.8,3.2)
-pl.xlim(-1.,4.)
+ax.plot(evals,"bo")
+ax.set_xlim(-0.3,3.3)
+ax.set_ylim(evals.min()-0.5,evals.max()+0.5)
 # put title
-pl.title("Molecule levels")
-pl.xlabel("Orbital")
-pl.ylabel("Energy")
+ax.set_title("Molecule levels")
+ax.set_xlabel("Orbital")
+ax.set_ylabel("Energy")
 # make an PDF figure of a plot
-pl.savefig("0dim_spectrum.pdf")                    
+fig.tight_layout()
+fig.savefig("0dim_spectrum.pdf")                    
 
 print 'Done.\n'

@@ -2,12 +2,12 @@
 
 # one dimensional tight-binding model of a trestle-like structure
 
-# Copyright under GNU General Public License 2010, 2012
+# Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as pl
+import pylab as plt
 
 # define lattice vectors
 lat=[[2.0,0.0],[0.0,1.0]]
@@ -33,7 +33,8 @@ my_model.set_hop(t_first, 1, 0, [1,0])
 my_model.display()
 
 # generate list of k-points following some high-symmetry line in
-kpts=k_path('full',100)
+(k_vec,k_dist,k_node)=my_model.k_path('fullc',100)
+k_label=[r"$-\pi$",r"$0$", r"$\pi$"]
 
 print '---------------------------------------'
 print 'starting calculation'
@@ -42,22 +43,29 @@ print 'Calculating bands...'
 
 # solve for eigenenergies of hamiltonian on
 # the set of k-points from above
-evals=my_model.solve_all(kpts)
+evals=my_model.solve_all(k_vec)
 
 # plotting of band structure
 print 'Plotting bandstructure...'
 
 # First make a figure object
-fig=pl.figure()
+fig, ax = plt.subplots()
+# specify horizontal axis details
+ax.set_xlim([0,k_node[2]])
+ax.set_xticks(k_node)
+ax.set_xticklabels(k_label)
+ax.axvline(x=k_node[1],linewidth=0.5, color='k')
+
 # plot first band
-pl.plot(evals[0])
+ax.plot(k_dist,evals[0])
 # plot second band
-pl.plot(evals[1])
+ax.plot(k_dist,evals[1])
 # put title
-pl.title("Trestle band structure")
-pl.xlabel("Path in k-space")
-pl.ylabel("Band energy")
+ax.set_title("Trestle band structure")
+ax.set_xlabel("Path in k-space")
+ax.set_ylabel("Band energy")
 # make an PDF figure of a plot
-pl.savefig("trestle_band.pdf")
+fig.tight_layout()
+fig.savefig("trestle_band.pdf")
 
 print 'Done.\n'

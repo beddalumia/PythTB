@@ -3,7 +3,7 @@
 # Haldane model from Phys. Rev. Lett. 61, 2015 (1988)
 # Solves model and draws one of its edge states.
 
-# Copyright under GNU General Public License 2010, 2012
+# Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
 from pythtb import * # import TB model class
@@ -63,12 +63,14 @@ ed=fin_model.get_num_orbitals()/2
 ax.set_title("Edge state for finite model without periodic direction")
 ax.set_xlabel("x coordinate")
 ax.set_ylabel("y coordinate")
+fig.tight_layout()
 fig.savefig("edge_state.pdf")
 #
 (fig,ax)=fin_model_half.visualize(0,1,eig_dr=evecs_half[ed,:],draw_hoppings=False)
 ax.set_title("Edge state for finite model periodic in one direction")
 ax.set_xlabel("x coordinate")
 ax.set_ylabel("y coordinate")
+fig.tight_layout()
 fig.savefig("edge_state_half.pdf")
 
 print 'Done.\n'

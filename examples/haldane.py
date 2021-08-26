@@ -2,12 +2,12 @@
 
 # Haldane model from Phys. Rev. Lett. 61, 2015 (1988)
 
-# Copyright under GNU General Public License 2010, 2012
+# Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as pl
+import pylab as plt
 
 # define lattice vectors
 lat=[[1.0,0.0],[0.5,np.sqrt(3.0)/2.0]]
@@ -18,7 +18,7 @@ orb=[[1./3.,1./3.],[2./3.,2./3.]]
 my_model=tb_model(2,2,lat,orb)
 
 # set model parameters
-delta=0.0
+delta=0.2
 t=-1.0
 t2 =0.15*np.exp((1.j)*np.pi/2.)
 t2c=t2.conjugate()
@@ -41,42 +41,50 @@ my_model.set_hop(t2c, 0, 0, [ 0, 1])
 # print tight-binding model
 my_model.display()
 
-# generate list of k-points following some high-symmetry line in
-# the k-space. Variable kpts here is just an array of k-points
-path=[[1.0,0.0],[0.0,1.0]]
-kpts=k_path(path,100)
-print '---------------------------------------'
-print 'report of k-point path'
-print '---------------------------------------'
-print 'Path runs over',len(kpts),'k-points connecting:'
-for k in path:
-    print k
-print
+# generate list of k-points following a segmented path in the BZ
+# list of nodes (high-symmetry points) that will be connected
+path=[[0.,0.],[2./3.,1./3.],[.5,.5],[1./3.,2./3.], [0.,0.]]
+# labels of the nodes
+label=(r'$\Gamma $',r'$K$', r'$M$', r'$K^\prime$', r'$\Gamma $')
 
-print '---------------------------------------'
-print 'starting calculation'
-print '---------------------------------------'
-print 'Calculating bands...'
+# call function k_path to construct the actual path
+(k_vec,k_dist,k_node)=my_model.k_path(path,101)
+# inputs:
+#   path: see above
+#   101: number of interpolated k-points to be plotted
+# outputs:
+#   k_vec: list of interpolated k-points
+#   k_dist: horizontal axis position of each k-point in the list
+#   k_node: horizontal axis position of each original node
 
-# solve for eigenenergies of hamiltonian on
-# the set of k-points from above
-evals=my_model.solve_all(kpts)
+# obtain eigenvalues to be plotted
+evals=my_model.solve_all(k_vec)
 
-# plotting of band structure
-print 'Plotting bandstructure...'
+# figure for bandstructure
 
-# First make a figure object
-fig=pl.figure()
-# plot first band
-pl.plot(evals[0])
-# plot second band
-pl.plot(evals[1])
+fig, ax = plt.subplots()
+# specify horizontal axis details
+# set range of horizontal axis
+ax.set_xlim([0,k_node[-1]])
+# put tickmarks and labels at node positions
+ax.set_xticks(k_node)
+ax.set_xticklabels(label)
+# add vertical lines at node positions
+for n in range(len(k_node)):
+  ax.axvline(x=k_node[n],linewidth=0.5, color='k')
 # put title
-pl.title("Haldane model band structure")
-pl.xlabel("Path in k-space")
-pl.ylabel("Band energy")
+ax.set_title("Haldane model band structure")
+ax.set_xlabel("Path in k-space")
+ax.set_ylabel("Band energy")
+
+# plot first band
+ax.plot(k_dist,evals[0])
+# plot second band
+ax.plot(k_dist,evals[1])
+
 # make an PDF figure of a plot
-pl.savefig("haldane_band.pdf")
+fig.tight_layout()
+fig.savefig("haldane_band.pdf")
 
 print
 print '---------------------------------------'
@@ -100,14 +108,15 @@ evals=evals.flatten()
 print 'Plotting DOS...'
 
 # now plot density of states
-fig=pl.figure()
-pl.hist(evals,50,range=(-4.,4.))
-pl.ylim(0.0,80.0)
+fig, ax = plt.subplots()
+ax.hist(evals,50,range=(-4.,4.))
+ax.set_ylim(0.0,80.0)
 # put title
-pl.title("Haldane model density of states")
-pl.xlabel("Energy")
-pl.ylabel("Number of states")
+ax.set_title("Haldane model density of states")
+ax.set_xlabel("Band energy")
+ax.set_ylabel("Number of states")
 # make an PDF figure of a plot
-pl.savefig("haldane_dos.pdf")
+fig.tight_layout()
+fig.savefig("haldane_dos.pdf")
 
 print 'Done.\n'
