@@ -3,12 +3,12 @@
 # Haldane model from Phys. Rev. Lett. 61, 2015 (1988)
 # Calculates density of states for finite sample of Haldane model
 
-# Copyright under GNU General Public License 2010, 2012
+# Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as pl
+import pylab as plt
 
 # define lattice vectors
 lat=[[1.0,0.0],[0.5,np.sqrt(3.0)/2.0]]
@@ -59,19 +59,21 @@ evals_true=fin_model_true.solve_all()
 evals_true=evals_true.flatten()
 
 # now plot density of states
-fig=pl.figure()
-pl.hist(evals_false,50,range=(-4.,4.))
-pl.ylim(0.0,80.0)
-pl.title("Finite Haldane model without PBC")
-pl.xlabel("Energy")
-pl.ylabel("Number of states")
-pl.savefig("haldane_fin_dos_false.pdf")  
-fig=pl.figure()
-pl.hist(evals_true,50,range=(-4.,4.))
-pl.ylim(0.0,80.0)
-pl.title("Finite Haldane model with PBC")
-pl.xlabel("Energy")
-pl.ylabel("Number of states")
-pl.savefig("haldane_fin_dos_true.pdf")  
+fig, ax = plt.subplots()
+ax.hist(evals_false,50,range=(-4.,4.))
+ax.set_ylim(0.0,80.0)
+ax.set_title("Finite Haldane model without PBC")
+ax.set_xlabel("Band energy")
+ax.set_ylabel("Number of states")
+fig.tight_layout()
+fig.savefig("haldane_fin_dos_false.pdf")  
+fig, ax = plt.subplots()
+ax.hist(evals_true,50,range=(-4.,4.))
+ax.set_ylim(0.0,80.0)
+ax.set_title("Finite Haldane model with PBC")
+ax.set_xlabel("Band energy")
+ax.set_ylabel("Number of states")
+fig.tight_layout()
+fig.savefig("haldane_fin_dos_true.pdf")  
 
 print 'Done.\n'

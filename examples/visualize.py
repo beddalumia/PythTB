@@ -2,7 +2,7 @@
 
 # Visualization example
 
-# Copyright under GNU General Public License 2010, 2012
+# Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
 from pythtb import * # import TB model class
@@ -33,6 +33,7 @@ my_model.set_hop(t, 1, 0, [ 0, 1])
 ax.set_title("Graphene, bulk")
 ax.set_xlabel("x coordinate")
 ax.set_ylabel("y coordinate")
+fig.tight_layout()
 fig.savefig("visualize_bulk.pdf")
 
 # cutout finite model along direction 0
@@ -42,6 +43,7 @@ cut_one=my_model.cut_piece(8,0,glue_edgs=False)
 ax.set_title("Graphene, ribbon")
 ax.set_xlabel("x coordinate")
 ax.set_ylabel("y coordinate")
+fig.tight_layout()
 fig.savefig("visualize_ribbon.pdf")
 
 # cutout finite model along direction 1 as well
@@ -51,6 +53,7 @@ cut_two=cut_one.cut_piece(8,1,glue_edgs=False)
 ax.set_title("Graphene, finite")
 ax.set_xlabel("x coordinate")
 ax.set_ylabel("y coordinate")
+fig.tight_layout()
 fig.savefig("visualize_finite.pdf")
 
 print 'Done.\n'

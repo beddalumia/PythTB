@@ -3,12 +3,12 @@
 # Haldane model from Phys. Rev. Lett. 61, 2015 (1988)
 # Calculates Berry phases and curvatures for this model
 
-# Copyright under GNU General Public License 2010, 2012
+# Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as pl
+import pylab as plt
 
 # define lattice vectors
 lat=[[1.0,0.0],[0.5,np.sqrt(3.0)/2.0]]
@@ -62,20 +62,25 @@ phi_b_1 = my_array_1.berry_phase([1],0,contin=True)
 # Berry phases along k_x for both bands
 phi_c_1 = my_array_1.berry_phase([0,1],0,contin=True)
 
-# Berry curvature for lower band
-curv_a_1=my_array_1.berry_curv([0])
+# Berry flux for lower band
+flux_a_1=my_array_1.berry_flux([0])
 
 # plot Berry phases
-fig=pl.figure()
-pl.plot(phi_a_1, 'ro')
-pl.plot(phi_b_1, 'go')
-pl.plot(phi_c_1, 'bo')
-pl.title("Berry phase for lower (red), top (green), both bands (blue)")
-pl.xlabel("k-space")
-pl.ylabel("Berry phase")
+fig, ax = plt.subplots()
+ky=np.linspace(0.,1.,len(phi_a_1))
+ax.plot(ky,phi_a_1, 'ro')
+ax.plot(ky,phi_b_1, 'go')
+ax.plot(ky,phi_c_1, 'bo')
+ax.set_title("Berry phase for lower (red), top (green), both bands (blue)")
+ax.set_xlabel(r"$k_y$")
+ax.set_ylabel(r"Berry phase along $k_x$")
+ax.set_ylim(-7.,7.)
+ax.yaxis.set_ticks([-2.*np.pi,-np.pi,0.,np.pi,2.*np.pi])
+ax.set_yticklabels((r'$-2\pi$',r'$-\pi$',r'$0$',r'$\pi$', r'$2\pi$'))
+fig.tight_layout()
 fig.savefig("haldane_bp_phase.pdf")
-# print out info about curvature
-print " Berry curvature= ",curv_a_1
+# print out info about flux
+print " Berry flux= ",flux_a_1
 
 print r"Using approach #2"
 # approach #2
@@ -98,10 +103,10 @@ for i in range(nkx):
 # impose periodic boundary conditions in both k_x and k_y directions
 my_array_2.impose_pbc(0,0)
 my_array_2.impose_pbc(1,1)
-# calculate Berry curvature for lower band
-curv_a_2=my_array_2.berry_curv([0])
+# calculate Berry flux for lower band
+flux_a_2=my_array_2.berry_flux([0])
 
 # print out info about curvature
-print " Berry curvature= ",curv_a_2
+print " Berry flux= ",flux_a_2
 
 print 'Done.\n'

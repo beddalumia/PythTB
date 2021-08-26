@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: pythtb
-Version: 1.6.2
+Version: 1.7.0
 Summary: Simple solver for tight binding models.
 Home-page: http://www.physics.rutgers.edu/pythtb
 Author: Sinisa Coh and David Vanderbilt

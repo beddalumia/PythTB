@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='pythtb',
-      version='1.6.2',
+      version='1.7.0',
       author='Sinisa Coh and David Vanderbilt',
       author_email='sinisacoh@gmail.com  dhv@physics.rutgers.edu',
       url='http://www.physics.rutgers.edu/pythtb',

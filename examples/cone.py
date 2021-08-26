@@ -3,12 +3,12 @@
 # Compute Berry phase around Dirac cone in
 # graphene with staggered onsite term delta
 
-# Copyright under GNU General Public License 2010, 2012
+# Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as pl
+import pylab as plt
 
 # define lattice vectors
 lat=[[1.0,0.0],[0.5,np.sqrt(3.0)/2.0]]
@@ -35,7 +35,7 @@ my_model.display()
 
 # construct circular path around Dirac cone
 #   parameters of the path
-circ_step=30
+circ_step=31
 circ_center=np.array([1.0/3.0,2.0/3.0])
 circ_radius=0.05
 # one-dimensional wf_array to store wavefunctions on the path
@@ -63,7 +63,7 @@ print
 
 # construct two-dimensional square patch covering the Dirac cone
 #  parameters of the patch
-square_step=30
+square_step=31
 square_center=np.array([1.0/3.0,2.0/3.0])
 square_length=0.1
 # two-dimensional wf_array to store wavefunctions on the path
@@ -83,24 +83,25 @@ for i in range(square_step):
         # store eigenvector into wf_array object
         w_square[i,j]=evec
 
-# compute Berry curvature on this square patch
-print "Berry curvature on square patch with length: ",square_length
+# compute Berry flux on this square patch
+print "Berry flux on square patch with length: ",square_length
 print "  centered at k-point: ",square_center
-print "  for band 0 equals    : ", w_square.berry_curv([0])
-print "  for band 1 equals    : ", w_square.berry_curv([1])
-print "  for both bands equals: ", w_square.berry_curv([0,1])
+print "  for band 0 equals    : ", w_square.berry_flux([0])
+print "  for band 1 equals    : ", w_square.berry_flux([1])
+print "  for both bands equals: ", w_square.berry_flux([0,1])
 print
 
 # also plot Berry phase on each small plaquette of the mesh
-plaq=w_square.berry_curv([0],individual_phases=True)
+plaq=w_square.berry_flux([0],individual_phases=True)
 #
-fig=pl.figure()
-pl.imshow(plaq.T,origin="lower",
+fig, ax = plt.subplots()
+ax.imshow(plaq.T,origin="lower",
           extent=(all_kpt[0,0,0],all_kpt[-2, 0,0],
                   all_kpt[0,0,1],all_kpt[ 0,-2,1],))
-pl.title("Berry curvature near Dirac cone")
-pl.xlabel("kx")
-pl.ylabel("ky")
-pl.savefig("cone_phases.pdf")
+ax.set_title("Berry curvature near Dirac cone")
+ax.set_xlabel(r"$k_x$")
+ax.set_ylabel(r"$k_y$")
+fig.tight_layout()
+fig.savefig("cone_phases.pdf")
 
 print 'Done.\n'
