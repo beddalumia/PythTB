@@ -10,7 +10,10 @@ history, as found in the primary location for the package:
 
    http://www.physics.rutgers.edu/pythtb/
 
-where the most up-to-date docs can be found.
+where the most up-to-date docs can be found. For now this fork is virtually
+untouched, but development of new custom features might happen in the future.
+For the pure original development history (and future official releases)
+please look at the /rutgers branch.
 
 Another interesting fork here on github is the numba-accelerated version
 by Mikel García and Iñigo Robredo: https://github.com/mikelgda/yeet-pythtb
