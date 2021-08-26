@@ -9,7 +9,7 @@
 from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as plt
+import matplotlib.pyplot as plt
 
 # define function to construct model
 def set_model(t,delta,lmbd):

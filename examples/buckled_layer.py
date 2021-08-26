@@ -9,7 +9,7 @@
 from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as plt
+import matplotlib.pyplot as plt
 
 # real space is 3D
 # define lattice vectors
@@ -74,7 +74,7 @@ ax.set_title("Bandstructure for buckled rectangular layer")
 ax.set_ylabel("Band energy")
 
 # specify horizontal axis details
-ax.set_xlim([0,k_node[-1]])
+ax.set_xlim(k_node[0],k_node[-1])
 # put tickmarks and labels at node positions
 ax.set_xticks(k_node)
 ax.set_xticklabels(label)

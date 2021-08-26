@@ -8,7 +8,7 @@
 from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as plt
+import matplotlib.pyplot as plt
 
 # define lattice vectors
 lat=[[2.0,0.0],[0.0,1.0]]
@@ -52,7 +52,7 @@ print('Plotting bandstructure...')
 # First make a figure object
 fig, ax = plt.subplots()
 # specify horizontal axis details
-ax.set_xlim([0,k_node[2]])
+ax.set_xlim(k_node[0],k_node[-1])
 ax.set_xticks(k_node)
 ax.set_xticklabels(k_label)
 ax.axvline(x=k_node[1],linewidth=0.5, color='k')

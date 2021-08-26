@@ -9,7 +9,7 @@
 from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as plt
+import matplotlib.pyplot as plt
 
 # define lattice vectors
 lat=[[1.0,0.0],[0.5,np.sqrt(3.0)/2.0]]

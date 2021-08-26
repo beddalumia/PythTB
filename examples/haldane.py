@@ -8,7 +8,7 @@
 from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as plt
+import matplotlib.pyplot as plt
 
 # define lattice vectors
 lat=[[1.0,0.0],[0.5,np.sqrt(3.0)/2.0]]
@@ -66,7 +66,7 @@ evals=my_model.solve_all(k_vec)
 fig, ax = plt.subplots()
 # specify horizontal axis details
 # set range of horizontal axis
-ax.set_xlim([0,k_node[-1]])
+ax.set_xlim(k_node[0],k_node[-1])
 # put tickmarks and labels at node positions
 ax.set_xticks(k_node)
 ax.set_xticklabels(label)
