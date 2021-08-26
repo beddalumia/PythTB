@@ -1,4 +1,4 @@
-In order to install PyTB package, simply execute this command as root
+In order to install PythTB package, simply execute this command as root
 
   python setup.py install
 
@@ -7,7 +7,7 @@ or execute this command as normal (non-root) user
   sudo python setup.py install
 
 If you do not have root privileges then you can use the following command
-to install PyTB in arbitrary folder DIR
+to install PythTB in arbitrary folder DIR
 
   python setup.py install --home=DIR
 
@@ -16,7 +16,7 @@ to PYTHONPATH variable. For example, in bash you would use
 
   export PYTHONPATH=$PYTHONPATH:DIR/lib/python
 
-  
-For more details on PyTB package go to
 
-http://www.physics.rutgers.edu/~dhv/pytb
+For more details on PythTB package go to
+
+http://www.physics.rutgers.edu/pythtb

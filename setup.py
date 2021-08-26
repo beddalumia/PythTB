@@ -2,12 +2,12 @@
 
 from distutils.core import setup
 
-setup(name='pytb',
-      version='1.5',
+setup(name='pythtb',
+      version='1.6.1',
       author='Sinisa Coh and David Vanderbilt',
       author_email='sinisacoh@gmail.com  dhv@physics.rutgers.edu',
-      url='http://www.physics.rutgers.edu/~dhv/pytb',
-      py_modules=['pytb'],
+      url='http://www.physics.rutgers.edu/pythtb',
+      py_modules=['pythtb'],
       license="gpl-3.0",
       description="Simple solver for tight binding models.",
       long_description="""The tight binding method is an approximate

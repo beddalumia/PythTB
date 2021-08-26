@@ -1,43 +1,42 @@
 #!/usr/bin/env python
 
-# Version 1.5
 # Haldane model from Phys. Rev. Lett. 61, 2015 (1988)
 
 # Copyright under GNU General Public License 2010, 2012
-# by Sinisa Coh and David Vanderbilt (see gpl-pytb.txt)
+# by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
-from pytb import * # import TB model class
-import numpy as nu
+from pythtb import * # import TB model class
+import numpy as np
 import pylab as pl
 
 # define lattice vectors
-lat=[[1.0,0.0],[0.5,nu.sqrt(3.0)/2.0]]
+lat=[[1.0,0.0],[0.5,np.sqrt(3.0)/2.0]]
 # define coordinates of orbitals
 orb=[[1./3.,1./3.],[2./3.,2./3.]]
 
 # make two dimensional tight-binding Haldane model
-my_model=tbmodel(2,2,lat,orb)
+my_model=tb_model(2,2,lat,orb)
 
 # set model parameters
 delta=0.0
 t=-1.0
-t2 =0.15*nu.exp((1.j)*nu.pi/2.)
+t2 =0.15*np.exp((1.j)*np.pi/2.)
 t2c=t2.conjugate()
 
 # set on-site energies
-my_model.set_sites([-delta,delta])
+my_model.set_onsite([-delta,delta])
 # set hoppings (one for each connected pair of orbitals)
 # (amplitude, i, j, [lattice vector to cell containing j])
-my_model.add_hop(t, 0, 1, [ 0, 0])
-my_model.add_hop(t, 1, 0, [ 1, 0])
-my_model.add_hop(t, 1, 0, [ 0, 1])
+my_model.set_hop(t, 0, 1, [ 0, 0])
+my_model.set_hop(t, 1, 0, [ 1, 0])
+my_model.set_hop(t, 1, 0, [ 0, 1])
 # add second neighbour complex hoppings
-my_model.add_hop(t2 , 0, 0, [ 1, 0])
-my_model.add_hop(t2 , 1, 1, [ 1,-1])
-my_model.add_hop(t2 , 1, 1, [ 0, 1])
-my_model.add_hop(t2c, 1, 1, [ 1, 0])
-my_model.add_hop(t2c, 0, 0, [ 1,-1])
-my_model.add_hop(t2c, 0, 0, [ 0, 1])
+my_model.set_hop(t2 , 0, 0, [ 1, 0])
+my_model.set_hop(t2 , 1, 1, [ 1,-1])
+my_model.set_hop(t2 , 1, 1, [ 0, 1])
+my_model.set_hop(t2c, 1, 1, [ 1, 0])
+my_model.set_hop(t2c, 0, 0, [ 1,-1])
+my_model.set_hop(t2c, 0, 0, [ 0, 1])
 
 # print tight-binding model
 my_model.display()
@@ -74,8 +73,10 @@ pl.plot(evals[0])
 pl.plot(evals[1])
 # put title
 pl.title("Haldane model band structure")
+pl.xlabel("Path in k-space")
+pl.ylabel("Band energy")
 # make an PDF figure of a plot
-pl.savefig("band.pdf")
+pl.savefig("haldane_band.pdf")
 
 print
 print '---------------------------------------'
@@ -104,7 +105,9 @@ pl.hist(evals,50,range=(-4.,4.))
 pl.ylim(0.0,80.0)
 # put title
 pl.title("Haldane model density of states")
+pl.xlabel("Energy")
+pl.ylabel("Number of states")
 # make an PDF figure of a plot
-pl.savefig("dos.pdf")
+pl.savefig("haldane_dos.pdf")
 
 print 'Done.\n'

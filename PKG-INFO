@@ -1,15 +1,15 @@
 Metadata-Version: 1.0
-Name: pytb
-Version: 1.5
+Name: pythtb
+Version: 1.6.1
 Summary: Simple solver for tight binding models.
-Home-page: http://www.physics.rutgers.edu/~dhv/pytb
+Home-page: http://www.physics.rutgers.edu/pythtb
 Author: Sinisa Coh and David Vanderbilt
 Author-email: sinisacoh@gmail.com  dhv@physics.rutgers.edu
 License: gpl-3.0
 Description: The tight binding method is an approximate
-        approach for solving for the electronic wave functions for
-        electrons in solids assuming a basis of localized atomic-like
-        orbitals.
+              approach for solving for the electronic wave functions for
+              electrons in solids assuming a basis of localized atomic-like
+              orbitals.
 Platform: UNIX
 Platform: Windows
 Platform: Mac OS X

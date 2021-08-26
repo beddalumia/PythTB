@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-# Version 1.5
 # one dimensional tight-binding model of a trestle-like structure
 
 # Copyright under GNU General Public License 2010, 2012
-# by Sinisa Coh and David Vanderbilt (see gpl-pytb.txt)
+# by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
-from pytb import * # import TB model class
-import numpy as nu
+from pythtb import * # import TB model class
+import numpy as np
 import pylab as pl
 
 # define lattice vectors
@@ -16,7 +15,7 @@ lat=[[2.0,0.0],[0.0,1.0]]
 orb=[[0.0,0.0],[0.5,1.0]]
 
 # make one dimensional tight-binding model of a trestle-like structure
-my_model=tbmodel(1,2,lat,orb)
+my_model=tb_model(1,2,lat,orb,per=[0])
 
 # set model parameters
 t_first=0.8+0.6j
@@ -25,10 +24,10 @@ t_second=2.0
 # leave on-site energies to default zero values
 # set hoppings (one for each connected pair of orbitals)
 # (amplitude, i, j, [lattice vector to cell containing j])
-my_model.add_hop(t_second, 0, 0, 1)
-my_model.add_hop(t_second, 1, 1, 1)
-my_model.add_hop(t_first, 0, 1, 0)
-my_model.add_hop(t_first, 1, 0, 1)
+my_model.set_hop(t_second, 0, 0, [1,0])
+my_model.set_hop(t_second, 1, 1, [1,0])
+my_model.set_hop(t_first, 0, 1, [0,0])
+my_model.set_hop(t_first, 1, 0, [1,0])
 
 # print tight-binding model
 my_model.display()
@@ -56,7 +55,9 @@ pl.plot(evals[0])
 pl.plot(evals[1])
 # put title
 pl.title("Trestle band structure")
+pl.xlabel("Path in k-space")
+pl.ylabel("Band energy")
 # make an PDF figure of a plot
-pl.savefig("band.pdf")
+pl.savefig("trestle_band.pdf")
 
 print 'Done.\n'
