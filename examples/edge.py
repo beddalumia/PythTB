@@ -6,6 +6,7 @@
 # Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
+from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
 
@@ -56,7 +57,7 @@ fin_model_half=tmp_model_half.cut_piece(10,1,glue_edgs=False)
 (evals_half,evecs_half)=fin_model_half.solve_all(eig_vectors=True)
 
 # pick index of state in the middle of the gap
-ed=fin_model.get_num_orbitals()/2
+ed=fin_model.get_num_orbitals()//2
 
 # draw one of the edge states in both cases
 (fig,ax)=fin_model.visualize(0,1,eig_dr=evecs[ed,:],draw_hoppings=False)
@@ -73,4 +74,4 @@ ax.set_ylabel("y coordinate")
 fig.tight_layout()
 fig.savefig("edge_state_half.pdf")
 
-print 'Done.\n'
+print('Done.\n')

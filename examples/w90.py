@@ -3,6 +3,7 @@
 # Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
+from __future__ import print_function
 from pythtb import * # import TB model class
 import pylab as plt
 
@@ -15,7 +16,7 @@ silicon=w90(r"example_a",r"silicon")
 fermi_ev=0.62285135E+01
 
 # all pair distances berween the orbitals
-print "Shells:\n",silicon.shells()
+print("Shells:\n",silicon.shells())
 
 # plot hopping terms as a function of distance on a log scale
 (dist,ham)=silicon.dist_hop()
@@ -43,11 +44,11 @@ my_model=silicon.model(zero_energy=fermi_ev,min_hopping_norm=0.01,max_distance=N
 fig, ax = plt.subplots()
 (w90_kpt,w90_evals)=silicon.w90_bands_consistency()
 for i in range(w90_evals.shape[0]):
-    ax.plot(range(w90_evals.shape[1]),w90_evals[i]-fermi_ev,"k-",zorder=-100)
+    ax.plot(list(range(w90_evals.shape[1])),w90_evals[i]-fermi_ev,"k-",zorder=-100)
 # now interpolate from the model on the same path in k-space 
 int_evals=my_model.solve_all(w90_kpt)
 for i in range(int_evals.shape[0]):
-    ax.plot(range(int_evals.shape[1]),int_evals[i],"r-",zorder=-50)
+    ax.plot(list(range(int_evals.shape[1])),int_evals[i],"r-",zorder=-50)
 ax.set_xlim(0,int_evals.shape[1]-1)
 ax.set_xlabel("K-path from Wannier90")
 ax.set_ylabel("Band energy (eV)")

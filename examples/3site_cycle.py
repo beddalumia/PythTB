@@ -6,6 +6,7 @@
 # Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
+from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
 import pylab as plt
@@ -86,7 +87,8 @@ wann_center=phase/(2.0*np.pi)
 ax_wann.plot(all_lambda,wann_center,"ko-")
 
 # compute integrated curvature
-print "Berry flux in k-lambda space: ",wf_kpt_lambda.berry_flux([0])
+final=wf_kpt_lambda.berry_flux([0])
+print("Berry flux in k-lambda space: ",final)
 
 # finish plot of onsite terms
 ax_onsite.set_title("Onsite energy for all three orbitals")
@@ -109,4 +111,4 @@ ax_wann.set_xlim(0.0,1.0)
 fig_wann.tight_layout()
 fig_wann.savefig("3site_wann.pdf")
 
-print 'Done.\n'
+print('Done.\n')

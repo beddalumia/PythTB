@@ -6,6 +6,7 @@
 # Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
+from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
 import pylab as plt
@@ -42,7 +43,7 @@ my_model.set_hop(t2c, 0, 0, [ 0, 1])
 # print tight-binding model details
 my_model.display()
 
-print r"Using approach #1"
+print(r"Using approach #1")
 # approach #1
 # generate object of type wf_array that will be used for
 # Berry phase and curvature calculations
@@ -80,9 +81,9 @@ ax.set_yticklabels((r'$-2\pi$',r'$-\pi$',r'$0$',r'$\pi$', r'$2\pi$'))
 fig.tight_layout()
 fig.savefig("haldane_bp_phase.pdf")
 # print out info about flux
-print " Berry flux= ",flux_a_1
+print(" Berry flux= ",flux_a_1)
 
-print r"Using approach #2"
+print(r"Using approach #2")
 # approach #2
 # do the same thing as in approach #1 but do not use
 # automated solver
@@ -107,6 +108,6 @@ my_array_2.impose_pbc(1,1)
 flux_a_2=my_array_2.berry_flux([0])
 
 # print out info about curvature
-print " Berry flux= ",flux_a_2
+print(" Berry flux= ",flux_a_2)
 
-print 'Done.\n'
+print('Done.\n')

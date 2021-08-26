@@ -5,6 +5,7 @@
 # Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
+from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
 import pylab as plt
@@ -86,11 +87,11 @@ ax.plot(k_dist,evals[1])
 fig.tight_layout()
 fig.savefig("haldane_band.pdf")
 
-print
-print '---------------------------------------'
-print 'starting DOS calculation'
-print '---------------------------------------'
-print 'Calculating DOS...'
+print()
+print('---------------------------------------')
+print('starting DOS calculation')
+print('---------------------------------------')
+print('Calculating DOS...')
 
 # calculate density of states
 # first solve the model on a mesh and return all energies
@@ -105,7 +106,7 @@ evals=my_model.solve_all(kpts)
 evals=evals.flatten()
 
 # plotting DOS
-print 'Plotting DOS...'
+print('Plotting DOS...')
 
 # now plot density of states
 fig, ax = plt.subplots()
@@ -119,4 +120,4 @@ ax.set_ylabel("Number of states")
 fig.tight_layout()
 fig.savefig("haldane_dos.pdf")
 
-print 'Done.\n'
+print('Done.\n')

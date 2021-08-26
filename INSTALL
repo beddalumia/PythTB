@@ -1,22 +1,17 @@
-In order to install PythTB package, simply execute this command as root
+To install the latest version of PythTB simply type in terminal:
 
-  python setup.py install
+  pip install pythtb --upgrade
 
-or execute this command as normal (non-root) user 
+If you don't have root access try installing PythTB into your home 
+folder by executing:
 
-  sudo python setup.py install
+  pip install pythtb --upgrade --user
 
-If you do not have root privileges then you can use the following command
-to install PythTB in arbitrary folder DIR
+If you don't have pip installed, consider updating your python.
+Alternatively, you can follow instructions here on how to install
+PythTB without pip: 
 
-  python setup.py install --home=DIR
+  http://www.physics.rutgers.edu/pythtb/install.html
 
-After executing this command you will need to add "DIR/lib/python" or equivalent
-to PYTHONPATH variable. For example, in bash you would use
-
-  export PYTHONPATH=$PYTHONPATH:DIR/lib/python
-
-
-For more details on PythTB package go to
-
-http://www.physics.rutgers.edu/pythtb
+PythTB is compatible with Python 2.7 and 3.x (Python 2.6 and 
+below are not recommended).

@@ -5,6 +5,7 @@
 # Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
+from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
 import pylab as plt
@@ -38,13 +39,13 @@ my_model.set_hop(t_first, 2, 3)
 # print tight-binding model
 my_model.display()
 
-print '---------------------------------------'
-print 'starting calculation'
-print '---------------------------------------'
-print 'Calculating bands...'
-print
-print 'Band energies'
-print    
+print('---------------------------------------')
+print('starting calculation')
+print('---------------------------------------')
+print('Calculating bands...')
+print()
+print('Band energies')
+print()    
 # solve for eigenenergies of hamiltonian
 evals=my_model.solve_all()
 
@@ -62,4 +63,4 @@ ax.set_ylabel("Energy")
 fig.tight_layout()
 fig.savefig("0dim_spectrum.pdf")                    
 
-print 'Done.\n'
+print('Done.\n')

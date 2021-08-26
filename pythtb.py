@@ -1,5 +1,8 @@
+from __future__ import print_function
+
 # PythTB python tight binding module.
-# Version 1.7.0, June 7, 2016
+# December 22, 2016
+__version__='1.7.1'
 
 # Copyright 2010, 2012, 2016 by Sinisa Coh and David Vanderbilt
 #
@@ -23,7 +26,7 @@ import numpy as np # numerics for matrices
 import sys # for exiting
 import copy # for deepcopying
 
-class tb_model:
+class tb_model(object):
     r"""
     This is the main class of the PythTB package which contains all
     information for the tight-binding model.
@@ -72,7 +75,7 @@ class tb_model:
       *1*.  Of course one can make spinfull calculation even with
       *nspin* set to 1, but then the user must keep track of which
       orbital corresponds to which spin component.
-      
+
     Example usage::
 
        # Creates model that is two-dimensional in real space but only
@@ -107,7 +110,7 @@ class tb_model:
         # special option: 'unit' implies unit matrix, also default value
         if lat is 'unit' or lat is None:
             self._lat=np.identity(dim_r,float)
-            print " Lattice vectors not specified! I will use identity matrix."
+            print(" Lattice vectors not specified! I will use identity matrix.")
         elif type(lat).__name__ not in ['list','ndarray']:
             raise Exception("\n\nArgument lat is not a list.")
         else:
@@ -128,11 +131,11 @@ class tb_model:
         if orb is 'bravais' or orb is None:
             self._norb=1
             self._orb=np.zeros((1,dim_r))
-            print " Orbital positions not specified. I will assume a single orbital at the origin."
+            print(" Orbital positions not specified. I will assume a single orbital at the origin.")
         elif type(orb).__name__=='int':
             self._norb=orb
             self._orb=np.zeros((orb,dim_r))
-            print " Orbital positions not specified. I will assume ",orb," orbitals at the origin"
+            print(" Orbital positions not specified. I will assume ",orb," orbitals at the origin")
         elif type(orb).__name__ not in ['list','ndarray']:
             raise Exception("\n\nArgument orb is not a list or an integer")
         else:
@@ -144,10 +147,10 @@ class tb_model:
                 raise Exception("\n\nWrong orb array dimensions")
 
         # choose which self._dim_k out of self._dim_r dimensions are
-        # to be considered periodic.
+        # to be considered periodic.        
         if per==None:
             # by default first _dim_k dimensions are periodic
-            self._per=range(self._dim_k)
+            self._per=list(range(self._dim_k))
         else:
             if len(per)!=self._dim_k:
                 raise Exception("\n\nWrong choice of periodic/infinite direction!")
@@ -158,6 +161,10 @@ class tb_model:
         if nspin not in [1,2]:
             raise Exception("\n\nWrong value of nspin, must be 1 or 2!")
         self._nspin=nspin
+
+        # by default, assume model did not come from w90 object and that
+        # position operator is diagonal
+        self._assume_position_operator_diagonal=True
 
         # compute number of electronic states at each k-point
         self._nsta=self._norb*self._nspin
@@ -568,55 +575,55 @@ matrix.""")
         Prints on the screen some information about this tight-binding
         model. This function doesn't take any parameters.
         """
-        print '---------------------------------------'
-        print 'report of tight-binding model'
-        print '---------------------------------------'
-        print 'k-space dimension           =',self._dim_k
-        print 'r-space dimension           =',self._dim_r
-        print 'number of spin components   =',self._nspin
-        print 'periodic directions         =',self._per
-        print 'number of orbitals          =',self._norb
-        print 'number of electronic states =',self._nsta
-        print 'lattice vectors:'
+        print('---------------------------------------')
+        print('report of tight-binding model')
+        print('---------------------------------------')
+        print('k-space dimension           =',self._dim_k)
+        print('r-space dimension           =',self._dim_r)
+        print('number of spin components   =',self._nspin)
+        print('periodic directions         =',self._per)
+        print('number of orbitals          =',self._norb)
+        print('number of electronic states =',self._nsta)
+        print('lattice vectors:')
         for i,o in enumerate(self._lat):
-            print " #",_nice_int(i,2)," ===>  [",
+            print(" #",_nice_int(i,2)," ===>  [", end=' ')
             for j,v in enumerate(o):
-                print _nice_float(v,7,4),
+                print(_nice_float(v,7,4), end=' ')
                 if j!=len(o)-1:
-                    print ",",
-            print "]"
-        print 'positions of orbitals:'
+                    print(",", end=' ')
+            print("]")
+        print('positions of orbitals:')
         for i,o in enumerate(self._orb):
-            print " #",_nice_int(i,2)," ===>  [",
+            print(" #",_nice_int(i,2)," ===>  [", end=' ')
             for j,v in enumerate(o):
-                print _nice_float(v,7,4),
+                print(_nice_float(v,7,4), end=' ')
                 if j!=len(o)-1:
-                    print ",",
-            print "]"
-        print 'site energies:'
+                    print(",", end=' ')
+            print("]")
+        print('site energies:')
         for i,site in enumerate(self._site_energies):
-            print " #",_nice_int(i,2)," ===>  ",
+            print(" #",_nice_int(i,2)," ===>  ", end=' ')
             if self._nspin==1:
-                print _nice_float(site,7,4)
+                print(_nice_float(site,7,4))
             elif self._nspin==2:
-                print str(site).replace("\n"," ")
-        print 'hoppings:'
+                print(str(site).replace("\n"," "))
+        print('hoppings:')
         for i,hopping in enumerate(self._hoppings):
-            print "<",_nice_int(hopping[1],2),"| H |",_nice_int(hopping[2],2),
+            print("<",_nice_int(hopping[1],2),"| H |",_nice_int(hopping[2],2), end=' ')
             if len(hopping)==4:
-                print "+ [",
+                print("+ [", end=' ')
                 for j,v in enumerate(hopping[3]):
-                    print _nice_int(v,2),
+                    print(_nice_int(v,2), end=' ')
                     if j!=len(hopping[3])-1:
-                        print ",",
+                        print(",", end=' ')
                     else:
-                        print "]",
-            print ">     ===> ",
+                        print("]", end=' ')
+            print(">     ===> ", end=' ')
             if self._nspin==1:
-                print _nice_complex(hopping[0],7,4)
+                print(_nice_complex(hopping[0],7,4))
             elif self._nspin==2:
-                print str(hopping[0]).replace("\n"," ")
-        print
+                print(str(hopping[0]).replace("\n"," "))
+        print()
 
     def visualize(self,dir_first,dir_second=None,eig_dr=None,draw_hoppings=True,ph_color="black"):
         r"""
@@ -1172,6 +1179,9 @@ matrix.""")
                            fin_per,
                            self._nspin)
 
+        # remember if came from w90
+        fin_model._assume_position_operator_diagonal=self._assume_position_operator_diagonal
+
         # now put all onsite terms for the finite model
         fin_model.set_onsite(onsite,mode="reset")
 
@@ -1432,6 +1442,9 @@ matrix.""")
         # create super-cell tb_model object to be returned
         sc_tb=tb_model(self._dim_k,self._dim_r,sc_cart_lat,sc_orb,per=self._per,nspin=self._nspin)
 
+        # remember if came from w90
+        sc_tb._assume_position_operator_diagonal=self._assume_position_operator_diagonal
+
         # repeat onsite energies
         for i in range(num_sc):
             for j in range(self._norb):
@@ -1532,9 +1545,9 @@ matrix.""")
         """
         
         # get the mesh size and checks for consistency
-        use_mesh=np.array(map(round,mesh_size),dtype=int)
+        use_mesh=np.array(list(map(round,mesh_size)),dtype=int)
         if use_mesh.shape!=(self._dim_k,):
-            print use_mesh.shape
+            print(use_mesh.shape)
             raise Exception("\n\nIncorrect size of the specified k-mesh!")
         if np.min(use_mesh)<=0:
             raise Exception("\n\nMesh must have positive non-zero number of elements.")
@@ -1656,8 +1669,8 @@ matrix.""")
 
         # make sure that k-points in the path have correct dimension
         if k_list.shape[1]!=self._dim_k:
-            print 'input k-space dimension is',k_list.shape[1]
-            print 'k-space dimension taken from model is',self._dim_k
+            print('input k-space dimension is',k_list.shape[1])
+            print('k-space dimension taken from model is',self._dim_k)
             raise Exception("\n\nk-space dimensions do not match")
 
         # must have more k-points in the path than number of nodes
@@ -1712,33 +1725,39 @@ matrix.""")
     
         if report==True:
             if self._dim_k==1:
-                print ' Path in 1D BZ defined by nodes at '+str(k_list.flatten())
+                print(' Path in 1D BZ defined by nodes at '+str(k_list.flatten()))
             else:
-                print '----- k_path report begin ----------'
+                print('----- k_path report begin ----------')
                 original=np.get_printoptions()
                 np.set_printoptions(precision=5)
-                print 'real-space lattice vectors\n', lat_per
-                print 'k-space metric tensor\n', k_metric
-                print 'internal coordinates of nodes\n', k_list
+                print('real-space lattice vectors\n', lat_per)
+                print('k-space metric tensor\n', k_metric)
+                print('internal coordinates of nodes\n', k_list)
                 if (lat_per.shape[0]==lat_per.shape[1]):
                     # lat_per is invertible
                     lat_per_inv=np.linalg.inv(lat_per).T
-                    print 'reciprocal-space lattice vectors\n', lat_per_inv
+                    print('reciprocal-space lattice vectors\n', lat_per_inv)
                     # cartesian coordinates of nodes
                     kpts_cart=np.tensordot(k_list,lat_per_inv,axes=1)
-                    print 'cartesian coordinates of nodes\n',kpts_cart
-                print 'list of segments:'
+                    print('cartesian coordinates of nodes\n',kpts_cart)
+                print('list of segments:')
                 for n in range(1,n_nodes):
                     dk=k_node[n]-k_node[n-1]
                     dk_str=_nice_float(dk,7,5)
-                    print '  length = '+dk_str+'  from ',k_list[n-1],' to ',k_list[n]
-                print 'node distance list:', k_node
-                print 'node index list:   ', np.array(node_index)
+                    print('  length = '+dk_str+'  from ',k_list[n-1],' to ',k_list[n])
+                print('node distance list:', k_node)
+                print('node index list:   ', np.array(node_index))
                 np.set_printoptions(precision=original["precision"])
-                print '----- k_path report end ------------'
-            print
+                print('----- k_path report end ------------')
+            print()
 
         return (k_vec,k_dist,k_node)
+
+    def ignore_position_operator_offdiagonal(self):
+        """Call to this function enables one to approximately compute
+        Berry-like objects from tight-binding models that were
+        obtained from Wannier90."""  
+        self._assume_position_operator_diagonal=True
 
     def position_matrix(self, evec, dir):
         r"""
@@ -1792,6 +1811,10 @@ matrix.""")
         if dir<0 or dir>=self._dim_r:
             raise Exception("Direction out of range!")
         
+        # check if model came from w90
+        if self._assume_position_operator_diagonal==False:
+            _offdiag_approximation_warning_and_stop()
+
         # get coordinates of orbitals along the specified direction
         pos_tmp=self._orb[:,dir]
         # reshape arrays in the case of spinfull calculation
@@ -1856,6 +1879,11 @@ matrix.""")
         See also this example: :ref:`haldane_hwf-example`.
 
         """
+
+        # check if model came from w90
+        if self._assume_position_operator_diagonal==False:
+            _offdiag_approximation_warning_and_stop()
+
         pos_exp=self.position_matrix(evec,dir).diagonal()
         return np.array(np.real(pos_exp),dtype=float)
 
@@ -1934,6 +1962,10 @@ matrix.""")
         See also this example: :ref:`haldane_hwf-example`,
 
         """
+        # check if model came from w90
+        if self._assume_position_operator_diagonal==False:
+            _offdiag_approximation_warning_and_stop()
+
         # get position matrix
         pos_mat=self.position_matrix(evec,dir)
 
@@ -1980,7 +2012,7 @@ tb_model.set_sites=tb_model.set_onsite
 tb_model.add_hop=tb_model.set_hop
 tbmodel=tb_model
 
-class wf_array:
+class wf_array(object):
     r"""
 
     This class is used to solve a tight-binding model
@@ -2425,6 +2457,10 @@ class wf_array:
 
         """
 
+        # check if model came from w90
+        if self._model._assume_position_operator_diagonal==False:
+            _offdiag_approximation_warning_and_stop()
+
         #if dir<0 or dir>self._dim_arr-1:
         #  raise Exception("\n\nDirection key out of range")
         #
@@ -2524,6 +2560,10 @@ class wf_array:
         """Similar to :func:`pythtb.tb_model.position_matrix`.  Only
         difference is that states are now specified with key in the
         mesh *key* and indices of bands *occ*."""
+        # check if model came from w90
+        if self._model._assume_position_operator_diagonal==False:
+            _offdiag_approximation_warning_and_stop()
+        #
         evec=self._wfs[tuple(key)][occ]
         return self._model.position_matrix(evec,dir)
 
@@ -2531,6 +2571,10 @@ class wf_array:
         """Similar to :func:`pythtb.tb_model.position_expectation`.  Only
         difference is that states are now specified with key in the
         mesh *key* and indices of bands *occ*."""
+        # check if model came from w90
+        if self._model._assume_position_operator_diagonal==False:
+            _offdiag_approximation_warning_and_stop()
+        #
         evec=self._wfs[tuple(key)][occ]
         return self._model.position_expectation(evec,dir)
 
@@ -2538,6 +2582,10 @@ class wf_array:
         """Similar to :func:`pythtb.tb_model.position_hwf`.  Only
         difference is that states are now specified with key in the
         mesh *key* and indices of bands *occ*."""
+        # check if model came from w90
+        if self._model._assume_position_operator_diagonal==False:
+            _offdiag_approximation_warning_and_stop()
+        #
         evec=self._wfs[tuple(key)][occ]
         return self._model.position_hwf(evec,dir,hwf_evec,basis)
 
@@ -2583,6 +2631,10 @@ class wf_array:
 
         """
 
+        # check if model came from w90
+        if self._model._assume_position_operator_diagonal==False:
+            _offdiag_approximation_warning_and_stop()
+
         # default case is to take first two directions for flux calculation
         if dirs==None:
             dirs=[0,1]
@@ -2596,7 +2648,7 @@ class wf_array:
         # 2D case
         if self._dim_arr==2:
             # compute the fluxes through all plaquettes on the entire plane 
-            ord=range(len(self._wfs.shape))
+            ord=list(range(len(self._wfs.shape)))
             # select two directions from dirs
             ord[0]=dirs[0]
             ord[1]=dirs[1]
@@ -2616,13 +2668,13 @@ class wf_array:
         # 3D or 4D case
         elif self._dim_arr in [3,4]:
             # compute the fluxes through all plaquettes on the entire plane 
-            ord=range(len(self._wfs.shape))
+            ord=list(range(len(self._wfs.shape)))
             # select two directions from dirs
             ord[0]=dirs[0]
             ord[1]=dirs[1]
 
             # find directions over which we wish to loop
-            ld=range(self._dim_arr)
+            ld=list(range(self._dim_arr))
             ld.remove(dirs[0])
             ld.remove(dirs[1])
             if len(ld)!=self._dim_arr-2:
@@ -2678,12 +2730,12 @@ class wf_array:
 
         """
 
-        print """ 
+        print(""" 
 
 Warning:
   Usage of function berry_curv is discouraged.
   It has been renamed as berry_flux, which should be used instead.
-"""
+""")
         return self.berry_flux(occ,individual_phases)
 
 
@@ -2697,7 +2749,7 @@ def k_path(kpts,nk,endpoint=True):
 
     """
 
-    print """ 
+    print(""" 
 
 Warning:
 
@@ -2708,20 +2760,20 @@ Warning:
     (k_vec,k_dist,k_node)=my_model.k_path(...)
   Note that this k_path function is a member of the tb_model class.
 
-"""
+""")
 
     if kpts=='full':
         # this means the full Brillouin zone for 1D case
         if endpoint==True:
-            return np.array(range(nk+1),dtype=float)/nk
+            return np.arange(nk+1,dtype=float)/float(nk)
         else:
-            return np.array(range(nk),dtype=float)/nk
+            return np.arange(nk,dtype=float)/float(nk)
     elif kpts=='half':
         # this means the half Brillouin zone for 1D case
         if endpoint==True:
-            return np.array(range(nk+1),dtype=float)/(2*nk)
+            return np.arange(nk+1,dtype=float)/float(2.*nk)
         else:
-            return np.array(range(nk),dtype=float)/(2*nk)
+            return np.arange(nk,dtype=float)/float(2.*nk)
     else:
         # general case
         kint=[]
@@ -2876,7 +2928,7 @@ def _array_phases_cont(arr_pha,clos):
         if i==0: cmpr=clos
         else: cmpr=ret[i-1,:]
         # remember which indices are still available to be matched
-        avail=range(arr_pha.shape[1])
+        avail=list(range(arr_pha.shape[1]))
         # go over all phases in cmpr[:]
         for j in range(cmpr.shape[0]):
             # minimal distance between pairs
@@ -2898,7 +2950,7 @@ def _array_phases_cont(arr_pha,clos):
     return ret
 
 
-class w90:
+class w90(object):
     r""" 
 
     This class of the PythTB package imports tight-binding model
@@ -2972,6 +3024,21 @@ class w90:
       within the frozen energy window of the disentanglement
       procedure.
 
+    .. warning:: So far PythTB assumes that the position operator is
+      diagonal in the tight-binding basis.  This is discussed in the
+      :download:`notes on tight-binding formalism
+      <misc/pythtb-formalism.pdf>` in Eq. 2.7.,
+      :math:`\langle\phi_{{\bf R} i} \vert {\bf r} \vert \phi_{{\bf
+      R}' j} \rangle = ({\bf R} + {\bf t}_j) \delta_{{\bf R} {\bf R}'}
+      \delta_{ij}`.  However, this relation does not hold for Wannier
+      functions!  Therefore, if you use tight-binding model derived
+      from this class in computing Berry-like objects that involve
+      position operator such as Berry phase or Berry flux, you would
+      not get the same result as if you computed those objects
+      directly from the first-principles code!  Nevertheless, this
+      approximation does not affect other properties such as band
+      structure dispersion.
+
     For the testing purposes user can download the following
     :download:`wannier90 output example
     <misc/wannier90_example.tar.gz>` and use the following
@@ -2979,7 +3046,7 @@ class w90:
     PythTB. Run the following command in unix terminal to decompress
     the tarball::
 
-        tar xvf wannier90_example.tar.gz
+        tar -zxf wannier90_example.tar.gz
  
     and then run the following :ref:`script <w90_quick>` in the same
     folder.
@@ -3080,7 +3147,7 @@ class w90:
             ham_val=float(sp[5])+1.0j*float(sp[6])
             # store stuff, for each R store hamiltonian and degeneracy
             ham_key=(ham_R1,ham_R2,ham_R3)
-            if self.ham_r.has_key(ham_key)==False:
+            if (ham_key in self.ham_r)==False:
                 self.ham_r[ham_key]={
                     "h":np.zeros((self.num_wan,self.num_wan),dtype=complex),
                     "deg":deg_ws[ind_R]
@@ -3191,7 +3258,10 @@ class w90:
         """    
 
         # make the model object
-        tb=tbmodel(3,3,self.lat,self.red_cen)
+        tb=tb_model(3,3,self.lat,self.red_cen)
+
+        # remember that this model was computed from w90
+        tb._assume_position_operator_diagonal=False
 
         # add onsite energies
         onsite=np.zeros(self.num_wan,dtype=float)
@@ -3433,8 +3503,9 @@ class w90:
         return (kpts,ene)
 
 
-def _cart_to_red((a1,a2,a3),cart):
+def _cart_to_red(tmp,cart):
     "Convert cartesian vectors cart to reduced coordinates of a1,a2,a3 vectors"
+    (a1,a2,a3)=tmp
     # matrix with lattice vectors
     cnv=np.array([a1,a2,a3])
     # transpose a matrix
@@ -3447,10 +3518,36 @@ def _cart_to_red((a1,a2,a3),cart):
         red[i]=np.dot(cnv,cart[i])
     return red
 
-def _red_to_cart((a1,a2,a3),red):
+def _red_to_cart(tmp,red):
     "Convert reduced to cartesian vectors."
+    (a1,a2,a3)=tmp
     # cartesian coordinates
     cart=np.zeros_like(red,dtype=float)
     for i in range(0,len(cart)):
         cart[i,:]=a1*red[i][0]+a2*red[i][1]+a3*red[i][2]
     return cart
+
+def _offdiag_approximation_warning_and_stop():
+    raise Exception("""
+
+----------------------------------------------------------------------
+
+  It looks like you are trying to calculate Berry-like object that
+  involves position operator.  However, you are using a tight-binding
+  model that was generated from Wannier90.  This procedure introduces
+  approximation as it ignores off-diagonal elements of the position
+  operator in the Wannier basis.  This is discussed here in more
+  detail:
+
+    http://physics.rutgers.edu/pythtb/usage.html#pythtb.w90
+
+  If you know what you are doing and wish to continue with the
+  calculation despite this approximation, please call the following
+  function on your tb_model object
+
+    my_model.ignore_position_operator_offdiagonal()
+
+----------------------------------------------------------------------
+
+""")
+    
