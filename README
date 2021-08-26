@@ -3,6 +3,11 @@ tight-binding approximation. It can be used to construct and solve
 tight-binding models of the electronic structure of systems of
 arbitrary dimensionality (crystals, slabs, ribbons, clusters, etc.),
 and is rich with features for computing Berry phases and related
-properties. For more details, please see:
+properties.
+
+Here we provide a fork of the project, with all the released development
+history, as found in the primary location for the package:
 
    http://www.physics.rutgers.edu/pythtb/
+
+where the most up-to-date docs can be found.
