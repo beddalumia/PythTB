@@ -12,7 +12,7 @@
 from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as plt
+import matplotlib.pyplot as plt
 
 # set model parameters
 delta=-0.2
@@ -128,7 +128,7 @@ ax2.set_ylim(-0.5,len_1+0.5)
   
 # label both axes
 for ax in [ax1,ax2]:
-  ax.set_xlim([0.,k_node[-1]])
+  ax.set_xlim(k_node[0],k_node[-1])
   ax.set_xticks(k_node)
   ax.set_xticklabels(k_label)
 

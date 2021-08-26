@@ -4,7 +4,7 @@
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
 from pythtb import * # import TB model class
-import pylab as plt
+import matplotlib.pyplot as plt
 
 # read output from Wannier90 that should be in folder named "example_a"
 #   see instructions above for how to obtain the example output from 

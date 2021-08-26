@@ -6,7 +6,7 @@
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
 from pythtb import * # import TB model class
-import pylab as plt
+import matplotlib.pyplot as plt
 
 # specify model
 lat=[[1.0]]
@@ -29,6 +29,7 @@ ax.set_xlabel("Path in k-space")
 ax.set_ylabel("Band energy")
 ax.set_xticks(k_node)
 ax.set_xticklabels(k_label)
+ax.set_xlim(k_node[0],k_node[-1])
 for n in range(len(k_node)):
   ax.axvline(x=k_node[n], linewidth=0.5, color='k')
 fig.tight_layout()

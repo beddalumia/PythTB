@@ -9,7 +9,7 @@
 from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as plt
+import matplotlib.pyplot as plt
 
 def get_kane_mele(topological):
   "Return a Kane-Mele model in the normal or topological phase."
@@ -93,6 +93,7 @@ for top_index in ["even","odd"]:
   ax1.set_title("Kane-Mele: "+top_index+" phase")
   ax1.set_xticks(k_node)
   ax1.set_xticklabels(label)
+  ax1.set_xlim(k_node[0],k_node[-1])
   for n in range(len(k_node)):
     ax1.axvline(x=k_node[n],linewidth=0.5, color='k')
   ax1.set_xlabel("k-space")
@@ -127,6 +128,7 @@ for top_index in ["even","odd"]:
   ax2.set_ylabel('Wannier center along x')
   ax2.set_xlabel(r'$k_y$')
   ax2.set_xticks([0.0,0.5,1.0])
+  ax2.set_xlim(0.0,1.0)
   ax2.set_xticklabels([r"$0$",r"$\pi$", r"$2\pi$"])
   ax2.axvline(x=.5,linewidth=0.5, color='k')
   ax2.set_title("1D Wannier centers: "+top_index+" phase")

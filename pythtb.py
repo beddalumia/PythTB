@@ -1,10 +1,10 @@
 from __future__ import print_function
 
 # PythTB python tight binding module.
-# December 22, 2016
-__version__='1.7.1'
+# August 25th, 2017
+__version__='1.7.2'
 
-# Copyright 2010, 2012, 2016 by Sinisa Coh and David Vanderbilt
+# Copyright 2010, 2012, 2016, 2017 by Sinisa Coh and David Vanderbilt
 #
 # This file is part of PythTB.  PythTB is free software: you can
 # redistribute it and/or modify it under the terms of the GNU General
@@ -38,7 +38,9 @@ class tb_model(object):
       real space lattice vectors there are and how many coordinates are
       needed to specify the orbital coordinates.
 
-    .. note:: Parameter *dim_r* can be larger than *dim_k*! For example,
+    .. note::
+
+      Parameter *dim_r* can be larger than *dim_k*! For example,
       a polymer is a three-dimensional molecule (one needs three
       coordinates to specify orbital positions), but it is periodic
       along only one direction. For a polymer, therefore, we should
@@ -375,12 +377,13 @@ class tb_model(object):
           orbital does not have to be in the home unit cell; its unit cell
           position is determined by parameter *ind_R*.
 
-        :param ind_R: Specifies, in reduced coordinates, the shift of
-          the ket orbital. The number of coordinates must equal the
-          dimensionality in real space (*dim_r* parameter) for consistency,
-          but only the periodic directions of ind_R will be considered. If
-          reciprocal space is zero-dimensional (as in a molecule),
-          this parameter does not need to be specified.
+        :param ind_R: Lattice vector (integer array, in reduced
+          coordinates) pointing to the unit cell where the ket
+          orbital is located.  The number of coordinates must equal
+          the dimensionality in real space (*dim_r* parameter) for
+          consistency, but only the periodic directions of ind_R are
+          used. If reciprocal space is zero-dimensional (as in a
+          molecule), this parameter does not need to be specified.
 
         :param mode: Similar to parameter *mode* in function *set_onsite*. 
           Speficies way in which parameter *hop_amp* is
@@ -552,8 +555,7 @@ direction.  (Or, alternatively, see the documentation on the
                 ret[1,1]+=use_val[0]
                 # sigma_x
                 ret[0,1]+=use_val[1]
-                ret[1,0]+=use_val[1]
-                # sigma_y
+                ret[1,0]+=use_val[1]                # sigma_y
                 ret[0,1]+=use_val[2]*(-1.0j)
                 ret[1,0]+=use_val[2]*( 1.0j)
                 # sigma_z
@@ -623,6 +625,25 @@ matrix.""")
                 print(_nice_complex(hopping[0],7,4))
             elif self._nspin==2:
                 print(str(hopping[0]).replace("\n"," "))
+        print('hopping distances:')
+        for i,hopping in enumerate(self._hoppings):
+            print("|  pos(",_nice_int(hopping[1],2),")  - pos(",_nice_int(hopping[2],2), end=' ')
+            if len(hopping)==4:
+                print("+ [", end=' ')
+                for j,v in enumerate(hopping[3]):
+                    print(_nice_int(v,2), end=' ')
+                    if j!=len(hopping[3])-1:
+                        print(",", end=' ')
+                    else:
+                        print("]", end=' ')
+            print(") |  =  ", end=' ')
+            pos_i=np.dot(self._orb[hopping[1]],self._lat)
+            pos_j=np.dot(self._orb[hopping[2]],self._lat)
+            if len(hopping)==4:
+                pos_j+=np.dot(hopping[3],self._lat)
+            dist=np.linalg.norm(pos_j-pos_i)
+            print (_nice_float(dist,7,4))
+
         print()
 
     def visualize(self,dir_first,dir_second=None,eig_dr=None,draw_hoppings=True,ph_color="black"):
@@ -722,7 +743,7 @@ matrix.""")
             raise Exception("\n\nNeed to specify index of second coordinate for projection!")
 
         # start a new figure
-        import pylab as plt
+        import matplotlib.pyplot as plt
         fig=plt.figure(figsize=[plt.rcParams["figure.figsize"][0],
                                 plt.rcParams["figure.figsize"][0]])
         ax=fig.add_subplot(111, aspect='equal')
@@ -1517,6 +1538,80 @@ matrix.""")
                             self._hoppings[h][3]+=disp_vec
 
 
+    def remove_orb(self,to_remove):
+        r"""
+
+        Returns a model with some orbitals removed.  Note that this
+        will reindex the orbitals with indices higher than those that
+        are removed.  For example.  If model has 6 orbitals and one
+        wants to remove 2nd orbital, then returned model will have 5
+        orbitals indexed as 0,1,2,3,4.  In the returned model orbital
+        indexed as 2 corresponds to the one indexed as 3 in the
+        original model.  Similarly 3 and 4 correspond to 4 and 5.
+        Indices of first two orbitals (0 and 1) are unaffected.
+
+        :param to_remove: List of orbital indices to be removed, or 
+          index of single orbital to be removed
+
+        :returns:
+
+          * **del_tb** -- Object of type :class:`pythtb.tb_model` 
+            representing a model with removed orbitals.
+
+        Example usage::
+        
+          # if original_model has say 10 orbitals then
+          # returned small_model will have only 8 orbitals.
+
+          small_model=original_model.remove_orb([2,5])
+
+        """
+
+        # if a single integer is given, convert to a list with one element
+        if type(to_remove).__name__=='int':
+            orb_index=[to_remove]
+        else:
+            orb_index=copy.deepcopy(to_remove)
+
+        # check range of indices
+        for i,orb_ind in enumerate(orb_index):
+            if orb_ind < 0 or orb_ind > self._norb-1 or type(orb_ind).__name__!='int':
+                raise Exception("\n\nSpecified wrong orbitals to remove!")
+        for i,ind1 in enumerate(orb_index):
+            for ind2 in orb_index[i+1:]:
+                if ind1==ind2:
+                    raise Exception("\n\nSpecified duplicate orbitals to remove!")
+
+        # put the orbitals to be removed in desceding order
+        orb_index = sorted(orb_index,reverse=True)
+
+        # make copy of a model
+        ret=copy.deepcopy(self)
+
+        # adjust some variables in the new model
+        ret._norb-=len(orb_index)
+        ret._nsta-=len(orb_index)*self._nspin
+        # remove indices one by one
+        for i,orb_ind in enumerate(orb_index):
+            # adjust variables
+            ret._orb = np.delete(ret._orb,orb_ind,0)
+            ret._site_energies = np.delete(ret._site_energies,orb_ind,0)
+            ret._site_energies_specified = np.delete(ret._site_energies_specified,orb_ind)
+            # adjust hopping terms (in reverse)
+            for j in range(len(ret._hoppings)-1,-1,-1):
+                h=ret._hoppings[j]
+                # remove all terms that involve this orbital
+                if h[1]==orb_ind or h[2]==orb_ind:
+                    del ret._hoppings[j]
+                else: # otherwise modify term
+                    if h[1]>orb_ind:
+                        ret._hoppings[j][1]-=1
+                    if h[2]>orb_ind:
+                        ret._hoppings[j][2]-=1
+        # return new model
+        return ret
+
+
     def k_uniform_mesh(self,mesh_size):
         r""" 
         Returns a uniform grid of k-points that can be passed to
@@ -2260,7 +2355,7 @@ class wf_array(object):
         :math:`\Psi_{n,{\bf k+G}}=\Psi_{n {\bf k}}` not only up to a
         phase, but they are also equal in phase.  It follows that
         the cell-periodic Bloch functions are related by
-        :math:`u_{n,{\bf k+G}}=e^{-i{\bf G}\cdot{\bf r}}\Psi_{n {\bf k}}`.
+        :math:`u_{n,{\bf k+G}}=e^{-i{\bf G}\cdot{\bf r}} u_{n {\bf k}}`.
         See :download:`notes on tight-binding formalism
         <misc/pythtb-formalism.pdf>` section 4.4 and equation 4.18 for
         more detail.  This routine sets the cell-periodic Bloch function
@@ -3354,7 +3449,7 @@ class w90(object):
           (dist,ham)=silicon.dist_hop()
 
           # plot logarithm of the hopping term as a function of distance
-          import pylab as plt
+          import matplotlib.pyplot as plt
           fig, ax = plt.subplots()
           ax.scatter(dist,np.log(np.abs(ham)))
           fig.savefig("localization.pdf")
@@ -3478,7 +3573,7 @@ class w90(object):
           evals=my_model.solve_all(w90_kpt)
           
           # plot comparison of the two
-          import pylab as plt
+          import matplotlib.pyplot as plt
           fig, ax = plt.subplots() 
           for i in range(evals.shape[0]):
               ax.plot(range(evals.shape[1]),evals[i],"r-",zorder=-50)

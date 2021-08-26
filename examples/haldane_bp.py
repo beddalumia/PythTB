@@ -9,7 +9,7 @@
 from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as plt
+import matplotlib.pyplot as plt
 
 # define lattice vectors
 lat=[[1.0,0.0],[0.5,np.sqrt(3.0)/2.0]]
@@ -75,6 +75,7 @@ ax.plot(ky,phi_c_1, 'bo')
 ax.set_title("Berry phase for lower (red), top (green), both bands (blue)")
 ax.set_xlabel(r"$k_y$")
 ax.set_ylabel(r"Berry phase along $k_x$")
+ax.set_xlim(0.,1.)
 ax.set_ylim(-7.,7.)
 ax.yaxis.set_ticks([-2.*np.pi,-np.pi,0.,np.pi,2.*np.pi])
 ax.set_yticklabels((r'$-2\pi$',r'$-\pi$',r'$0$',r'$\pi$', r'$2\pi$'))
