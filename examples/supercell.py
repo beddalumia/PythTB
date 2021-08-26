@@ -6,6 +6,7 @@
 # Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
+from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
 import pylab as plt
@@ -49,7 +50,7 @@ fig.savefig("supercell_vis.pdf")
 evals=slab_model.solve_all(k_vec)
 
 # plotting of band structure
-print 'Plotting bandstructure...'
+print('Plotting bandstructure...')
 
 # First make a figure object
 fig, ax = plt.subplots()
@@ -69,4 +70,4 @@ ax.set_xticklabels((r'$0$',r'$\pi$',r'$2\pi$'))
 fig.tight_layout()
 fig.savefig("supercell_band.pdf")
 
-print 'Done.\n'
+print('Done.\n')

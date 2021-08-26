@@ -6,6 +6,7 @@
 # Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
+from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
 import pylab as plt
@@ -53,16 +54,16 @@ for i_lambda in range(path_steps):
         wf_kpt_lambda[i_lambda,i_kpt]=evec[:,i_kpt,:]
 
 # compute integrated curvature
-print "Chern numbers for rising fillings"
-print "  Band  0     = %5.2f" % (wf_kpt_lambda.berry_flux([0])/(2.*np.pi))
-print "  Bands 0,1   = %5.2f" % (wf_kpt_lambda.berry_flux([0,1])/(2.*np.pi))
-print "  Bands 0,1,2 = %5.2f" % (wf_kpt_lambda.berry_flux([0,1,2])/(2.*np.pi))
-print ""
-print "Chern numbers for individual bands"
-print "  Band  0 = %5.2f" % (wf_kpt_lambda.berry_flux([0])/(2.*np.pi))
-print "  Band  1 = %5.2f" % (wf_kpt_lambda.berry_flux([1])/(2.*np.pi))
-print "  Band  2 = %5.2f" % (wf_kpt_lambda.berry_flux([2])/(2.*np.pi))
-print ""
+print("Chern numbers for rising fillings")
+print("  Band  0     = %5.2f" % (wf_kpt_lambda.berry_flux([0])/(2.*np.pi)))
+print("  Bands 0,1   = %5.2f" % (wf_kpt_lambda.berry_flux([0,1])/(2.*np.pi)))
+print("  Bands 0,1,2 = %5.2f" % (wf_kpt_lambda.berry_flux([0,1,2])/(2.*np.pi)))
+print("")
+print("Chern numbers for individual bands")
+print("  Band  0 = %5.2f" % (wf_kpt_lambda.berry_flux([0])/(2.*np.pi)))
+print("  Band  1 = %5.2f" % (wf_kpt_lambda.berry_flux([1])/(2.*np.pi)))
+print("  Band  2 = %5.2f" % (wf_kpt_lambda.berry_flux([2])/(2.*np.pi)))
+print("")
 
 # for annotating plot with text
 text_lower="C of band [0] = %3.0f" % (wf_kpt_lambda.berry_flux([0])/(2.*np.pi))
@@ -119,4 +120,4 @@ ax.set_xlim(0.,1.)
 fig.tight_layout()
 fig.savefig("3site_endstates.pdf")
 
-print 'Done.\n'
+print('Done.\n')

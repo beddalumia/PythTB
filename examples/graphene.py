@@ -5,6 +5,7 @@
 # Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
+from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
 import pylab as plt
@@ -50,10 +51,10 @@ nk=121
 #   k_dist: horizontal axis position of each k-point in the list
 #   k_node: horizontal axis position of each original node
 
-print '---------------------------------------'
-print 'starting calculation'
-print '---------------------------------------'
-print 'Calculating bands...'
+print('---------------------------------------')
+print('starting calculation')
+print('---------------------------------------')
+print('Calculating bands...')
 
 # obtain eigenvalues to be plotted
 evals=my_model.solve_all(k_vec)
@@ -83,4 +84,4 @@ ax.plot(k_dist,evals[1])
 fig.tight_layout()
 fig.savefig("graphene.pdf")
 
-print 'Done.\n'
+print('Done.\n')

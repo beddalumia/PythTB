@@ -6,6 +6,7 @@
 # Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
+from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
 import pylab as plt
@@ -59,13 +60,13 @@ label=(r'$\Gamma $',r'$X$', r'$M$', r'$\Gamma $')
 # ----------------------------------------
 # do bandstructure calculation
 # ----------------------------------------
-print 'Calculating bandstructure...'
+print('Calculating bandstructure...')
 evals=my_model.solve_all(k_vec)
 
 # ----------------------------------------
 # plot band structure
 # ----------------------------------------
-print 'Plotting bandstructure...'
+print('Plotting bandstructure...')
 
 # Initialize plot
 fig, ax = plt.subplots()
@@ -89,4 +90,4 @@ ax.plot(k_dist,evals[1])
 fig.tight_layout()
 fig.savefig("buckled_layer.pdf")
 
-print 'Done.\n'
+print('Done.\n')

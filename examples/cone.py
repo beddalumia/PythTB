@@ -6,6 +6,7 @@
 # Copyright under GNU General Public License 2010, 2012, 2016
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
+from __future__ import print_function
 from pythtb import * # import TB model class
 import numpy as np
 import pylab as plt
@@ -54,12 +55,12 @@ for i in range(circ_step):
 w_circ[-1]=w_circ[0]
 
 # compute Berry phase along circular path
-print "Berry phase along circle with radius: ",circ_radius
-print "  centered at k-point: ",circ_center
-print "  for band 0 equals    : ", w_circ.berry_phase([0],0)
-print "  for band 1 equals    : ", w_circ.berry_phase([1],0)
-print "  for both bands equals: ", w_circ.berry_phase([0,1],0)
-print
+print("Berry phase along circle with radius: ",circ_radius)
+print("  centered at k-point: ",circ_center)
+print("  for band 0 equals    : ", w_circ.berry_phase([0],0))
+print("  for band 1 equals    : ", w_circ.berry_phase([1],0))
+print("  for both bands equals: ", w_circ.berry_phase([0,1],0))
+print()
 
 # construct two-dimensional square patch covering the Dirac cone
 #  parameters of the patch
@@ -84,12 +85,12 @@ for i in range(square_step):
         w_square[i,j]=evec
 
 # compute Berry flux on this square patch
-print "Berry flux on square patch with length: ",square_length
-print "  centered at k-point: ",square_center
-print "  for band 0 equals    : ", w_square.berry_flux([0])
-print "  for band 1 equals    : ", w_square.berry_flux([1])
-print "  for both bands equals: ", w_square.berry_flux([0,1])
-print
+print("Berry flux on square patch with length: ",square_length)
+print("  centered at k-point: ",square_center)
+print("  for band 0 equals    : ", w_square.berry_flux([0]))
+print("  for band 1 equals    : ", w_square.berry_flux([1]))
+print("  for both bands equals: ", w_square.berry_flux([0,1]))
+print()
 
 # also plot Berry phase on each small plaquette of the mesh
 plaq=w_square.berry_flux([0],individual_phases=True)
@@ -104,4 +105,4 @@ ax.set_ylabel(r"$k_y$")
 fig.tight_layout()
 fig.savefig("cone_phases.pdf")
 
-print 'Done.\n'
+print('Done.\n')
