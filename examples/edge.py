@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 
 # Haldane model from Phys. Rev. Lett. 61, 2015 (1988)
-# Calculates density of states for finite sample of Haldane model
+# Solves model and draws one of its edge states.
 
 # Copyright under GNU General Public License 2010, 2012
 # by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
 from pythtb import * # import TB model class
 import numpy as np
-import pylab as pl
 
 # define lattice vectors
 lat=[[1.0,0.0],[0.5,np.sqrt(3.0)/2.0]]
@@ -43,35 +42,33 @@ my_model.set_hop(t2c, 0, 0, [ 0, 1])
 my_model.display()
 
 # cutout finite model first along direction x with no PBC
-tmp_model=my_model.cut_piece(20,0,glue_edgs=False)
-# cutout also along y direction
-fin_model_false=tmp_model.cut_piece(20,1,glue_edgs=False)
+tmp_model=my_model.cut_piece(10,0,glue_edgs=False)
+# cutout also along y direction with no PBC
+fin_model=tmp_model.cut_piece(10,1,glue_edgs=False)
 
 # cutout finite model first along direction x with PBC
-tmp_model=my_model.cut_piece(20,0,glue_edgs=True)
-# cutout also along y direction
-fin_model_true=tmp_model.cut_piece(20,1,glue_edgs=True)
+tmp_model_half=my_model.cut_piece(10,0,glue_edgs=True)
+# cutout also along y direction with no PBC
+fin_model_half=tmp_model_half.cut_piece(10,1,glue_edgs=False)
 
-# solve finite model
-evals_false=fin_model_false.solve_all()
-evals_false=evals_false.flatten()
-evals_true=fin_model_true.solve_all()
-evals_true=evals_true.flatten()
+# solve finite models
+(evals,evecs)=fin_model.solve_all(eig_vectors=True)
+(evals_half,evecs_half)=fin_model_half.solve_all(eig_vectors=True)
 
-# now plot density of states
-fig=pl.figure()
-pl.hist(evals_false,50,range=(-4.,4.))
-pl.ylim(0.0,80.0)
-pl.title("Finite Haldane model without PBC")
-pl.xlabel("Energy")
-pl.ylabel("Number of states")
-pl.savefig("haldane_fin_dos_false.pdf")  
-fig=pl.figure()
-pl.hist(evals_true,50,range=(-4.,4.))
-pl.ylim(0.0,80.0)
-pl.title("Finite Haldane model with PBC")
-pl.xlabel("Energy")
-pl.ylabel("Number of states")
-pl.savefig("haldane_fin_dos_true.pdf")  
+# pick index of state in the middle of the gap
+ed=fin_model.get_num_orbitals()/2
+
+# draw one of the edge states in both cases
+(fig,ax)=fin_model.visualize(0,1,eig_dr=evecs[ed,:],draw_hoppings=False)
+ax.set_title("Edge state for finite model without periodic direction")
+ax.set_xlabel("x coordinate")
+ax.set_ylabel("y coordinate")
+fig.savefig("edge_state.pdf")
+#
+(fig,ax)=fin_model_half.visualize(0,1,eig_dr=evecs_half[ed,:],draw_hoppings=False)
+ax.set_title("Edge state for finite model periodic in one direction")
+ax.set_xlabel("x coordinate")
+ax.set_ylabel("y coordinate")
+fig.savefig("edge_state_half.pdf")
 
 print 'Done.\n'

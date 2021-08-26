@@ -1,44 +1,43 @@
 #!/usr/bin/env python
 
-# Version 1.5
 # Haldane model from Phys. Rev. Lett. 61, 2015 (1988)
 # Calculates Berry phases and curvatures for this model
 
 # Copyright under GNU General Public License 2010, 2012
-# by Sinisa Coh and David Vanderbilt (see gpl-pytb.txt)
+# by Sinisa Coh and David Vanderbilt (see gpl-pythtb.txt)
 
-from pytb import * # import TB model class
-import numpy as nu
+from pythtb import * # import TB model class
+import numpy as np
 import pylab as pl
 
 # define lattice vectors
-lat=[[1.0,0.0],[0.5,nu.sqrt(3.0)/2.0]]
+lat=[[1.0,0.0],[0.5,np.sqrt(3.0)/2.0]]
 # define coordinates of orbitals
 orb=[[1./3.,1./3.],[2./3.,2./3.]]
 
 # make two dimensional tight-binding Haldane model
-my_model=tbmodel(2,2,lat,orb)
+my_model=tb_model(2,2,lat,orb)
 
 # set model parameters
 delta=0.0
 t=-1.0
-t2 =0.15*nu.exp((1.j)*nu.pi/2.)
+t2 =0.15*np.exp((1.j)*np.pi/2.)
 t2c=t2.conjugate()
 
 # set on-site energies
-my_model.set_sites([-delta,delta])
+my_model.set_onsite([-delta,delta])
 # set hoppings (one for each connected pair of orbitals)
 # (amplitude, i, j, [lattice vector to cell containing j])
-my_model.add_hop(t, 0, 1, [ 0, 0])
-my_model.add_hop(t, 1, 0, [ 1, 0])
-my_model.add_hop(t, 1, 0, [ 0, 1])
+my_model.set_hop(t, 0, 1, [ 0, 0])
+my_model.set_hop(t, 1, 0, [ 1, 0])
+my_model.set_hop(t, 1, 0, [ 0, 1])
 # add second neighbour complex hoppings
-my_model.add_hop(t2 , 0, 0, [ 1, 0])
-my_model.add_hop(t2 , 1, 1, [ 1,-1])
-my_model.add_hop(t2 , 1, 1, [ 0, 1])
-my_model.add_hop(t2c, 1, 1, [ 1, 0])
-my_model.add_hop(t2c, 0, 0, [ 1,-1])
-my_model.add_hop(t2c, 0, 0, [ 0, 1])
+my_model.set_hop(t2 , 0, 0, [ 1, 0])
+my_model.set_hop(t2 , 1, 1, [ 1,-1])
+my_model.set_hop(t2 , 1, 1, [ 0, 1])
+my_model.set_hop(t2c, 1, 1, [ 1, 0])
+my_model.set_hop(t2c, 0, 0, [ 1,-1])
+my_model.set_hop(t2c, 0, 0, [ 0, 1])
 
 # print tight-binding model details
 my_model.display()
@@ -62,10 +61,13 @@ curv_a_1=my_array_1.berry_curv([0])
 
 # plot Berry phases
 fig=pl.figure()
-pl.plot(phi_a_1, 'o')
-pl.plot(phi_b_1, 'o')
-pl.plot(phi_c_1, 'o')
-fig.savefig("phase.pdf")
+pl.plot(phi_a_1, 'ro')
+pl.plot(phi_b_1, 'go')
+pl.plot(phi_c_1, 'bo')
+pl.title("Berry phase for lower (red), top (green), both bands (blue)")
+pl.xlabel("k-space")
+pl.ylabel("Berry phase")
+fig.savefig("haldane_bp_phase.pdf")
 # print out info about curvature
 print " Berry curvature= ",curv_a_1
 
@@ -77,8 +79,8 @@ print r"Using approach #2"
 # intialize k-space mesh
 nkx=31
 nky=31
-kx=nu.linspace(-0.5,0.5,num=nkx)
-ky=nu.linspace(-0.5,0.5,num=nky)
+kx=np.linspace(-0.5,0.5,num=nkx)
+ky=np.linspace(-0.5,0.5,num=nky)
 # initialize object to store all wavefunctions
 my_array_2=wf_array(my_model,[nkx,nky])
 # solve model at all k-points
@@ -86,9 +88,10 @@ for i in range(nkx):
     for j in range(nky):
         (eval,evec)=my_model.solve_one([kx[i],ky[j]],eig_vectors=True)
         # store wavefunctions
-        my_array_2.add_wf([i,j],evec)
+        my_array_2[i,j]=evec
 # impose periodic boundary conditions in both k_x and k_y directions
-my_array_2.impose_pbc([True,True])
+my_array_2.impose_pbc(0,0)
+my_array_2.impose_pbc(1,1)
 # calculate Berry curvature for lower band
 curv_a_2=my_array_2.berry_curv([0])
 
