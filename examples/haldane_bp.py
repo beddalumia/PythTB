@@ -50,13 +50,19 @@ my_array_1=wf_array(my_model,[31,31])
 # solve model on a regular grid, and put origin of
 # Brillouin zone at -1/2 -1/2 point
 my_array_1.solve_on_grid([-0.5,-0.5])
-# calculate Berry phases along direction k_x for lower band
+
+# calculate Berry phases around the BZ in the k_x direction
+# (which can be interpreted as the 1D hybrid Wannier center
+# in the x direction) and plot results as a function of k_y
+#
+# Berry phases along k_x for lower band
 phi_a_1 = my_array_1.berry_phase([0],0,contin=True)
-# calculate Berry phases along direction k_x for upper band
+# Berry phases along k_x for upper band
 phi_b_1 = my_array_1.berry_phase([1],0,contin=True)
-# calculate Berry phases along direction k_x for both bands
+# Berry phases along k_x for both bands
 phi_c_1 = my_array_1.berry_phase([0,1],0,contin=True)
-# calculate Berry curvature for lower band
+
+# Berry curvature for lower band
 curv_a_1=my_array_1.berry_curv([0])
 
 # plot Berry phases
